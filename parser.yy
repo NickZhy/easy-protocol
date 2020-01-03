@@ -5,6 +5,7 @@
 %parse-param { std::vector<Ast*> &astLst }
 
 %code requires {
+    #include <string>
     #include <vector>
 
     #include "ast.hh"
@@ -16,8 +17,6 @@
 }
 
 %{
-    #include <iostream>
-
     #include "parser.tab.hh"
     #include "lexer.lex.hh"
 
@@ -27,7 +26,7 @@
 %union {
     int	intVal;
     float floatVal;
-    char *strVal;
+    std::string *strVal;
 
     Ast	*node;
     Identifier *id;
@@ -351,13 +350,17 @@ program
 ;
 %%
 
+#include <unordered_set>
+#include <iostream>
+
 void yyerror(YYLTYPE* yyllocp, void* scanner, std::vector<Ast*> &ret, const char* msg) {
     printf("[%d:%d]: %s\n", yyllocp->first_line, yyllocp->first_column, msg);
 }
 
 void parse(std::vector<Ast*> &astLst, FILE *file) {
     yyscan_t scanner;
-    yylex_init(&scanner);
+    std::unordered_set<std::string> types;
+    yylex_init_extra(&types, &scanner);
     yyset_in(file, scanner);
 
     astLst.clear();

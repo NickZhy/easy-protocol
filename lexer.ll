@@ -3,6 +3,12 @@
 %option yylineno
 %option bison-bridge
 %option bison-locations
+%option extra-type="std::unordered_set<std::string>*"
+
+%top {
+    #include <string>
+    #include <unordered_set>
+}
 
 %{
     #include "parser.tab.hh"
@@ -94,7 +100,7 @@ EXP	([Ee][-+]?[0-9]+)
 "<<="	{ return LSH_ASG; }
 ">>="	{ return RSH_ASG; }
 
-[a-zA-Z_]+[a-zA-Z_0-9]*	{ yylval->strVal = yytext; return ID; }
+[a-zA-Z_]+[a-zA-Z_0-9]*	{ yylval->strVal = new std::string(yytext); return yyextra->count(yytext) ? TYPE_NAME : ID; }
 [0-9]+	                { yylval->intVal = atoi(yytext); return INT_CON; }
 
 [0-9]+"."[0-9]*{EXP}? |

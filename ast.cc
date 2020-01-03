@@ -79,12 +79,14 @@ std::string Constant::toString() {
 }
 
 // Identifier
-Identifier::Identifier(char *n): name(n) {}
+Identifier::Identifier(std::string *n): name(n) {}
 
-Identifier::~Identifier() {}
+Identifier::~Identifier() {
+    delete name;
+}
 
 std::string Identifier::toString() {
-    return name;
+    return *name;
 }
 
 // FunctionCall

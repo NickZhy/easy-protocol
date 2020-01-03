@@ -45,7 +45,7 @@ class Type: public Ast {
 
 // Expression
 class Constant: public Expression {
-    PrimitiveType  type;
+    PrimitiveType type;
     union {
 	int intVal;
 	float floatVal;
@@ -58,9 +58,9 @@ class Constant: public Expression {
 };
 
 class Identifier: public Expression {
-    std::string name;
+    std::string *name;
     public:
-    Identifier(char *n);
+    Identifier(std::string *n);
     ~Identifier();
     std::string toString();
 };
