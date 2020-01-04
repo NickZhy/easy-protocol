@@ -341,7 +341,7 @@ struct_decl
 /* top level statement */
 top_level_stat
 : function_decl	{ astLst.push_back($1); }
-| struct_decl   { astLst.push_back($1); }
+| struct_decl   { astLst.push_back($1); yyget_extra(scanner)->insert(*($1->id->name)); }
 ;
 
 program

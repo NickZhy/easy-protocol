@@ -359,5 +359,5 @@ StructDeclaration::~StructDeclaration() {
 }
 
 std::string StructDeclaration::toString() {
-    return "struct " + id->toString() + " {\n" + vec2str(body, "\n", "    ") + "\n}\n";
+    return "struct " + id->toString() + " {\n" + vec2str(body, "\n", "    ") + "\n}";
 }

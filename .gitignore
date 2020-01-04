@@ -7,3 +7,4 @@ ezpcc
 *.lex.cc
 *.lex.hh
 *.swp
+*.dSYM
