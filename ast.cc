@@ -8,6 +8,21 @@
 // Ast virtual destructor
 Ast::~Ast() {}
 
+// Identifier
+Identifier::Identifier(std::string *n): name(n) {}
+
+Identifier::~Identifier() {
+    delete name;
+}
+
+std::string Identifier::toString() {
+    return *name;
+}
+
+void Identifier::accept(AstVisitor *visitor) {
+    visitor->visitIdentifier(this);
+}
+
 // Type
 Type::Type(PrimitiveType t): isPrimitive(true), priType(t), dims(NULL) {}
 
@@ -83,21 +98,6 @@ std::string Constant::toString() {
 
 void Constant::accept(AstVisitor *visitor) {
     visitor->visitConstant(this);
-}
-
-// Identifier
-Identifier::Identifier(std::string *n): name(n) {}
-
-Identifier::~Identifier() {
-    delete name;
-}
-
-std::string Identifier::toString() {
-    return *name;
-}
-
-void Identifier::accept(AstVisitor *visitor) {
-    visitor->visitIdentifier(this);
 }
 
 // FunctionCall

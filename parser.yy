@@ -345,7 +345,7 @@ top_level_stat
 ;
 
 program
-: 
+: top_level_stat
 | program top_level_stat
 ;
 %%

@@ -28,7 +28,16 @@ class Expression: public Ast {};
 
 class Statement: public Ast {};
 
-class Identifier;
+class Identifier: public Expression {
+    public:
+    std::string *name;
+
+    Identifier(std::string *n);
+    ~Identifier();
+
+    std::string toString();
+    void accept(AstVisitor *visitor);
+};
 
 // Type
 class Type: public Ast {
@@ -62,17 +71,6 @@ class Constant: public Expression {
     Constant(int v);
     Constant(float v);
     ~Constant();
-
-    std::string toString();
-    void accept(AstVisitor *visitor);
-};
-
-class Identifier: public Expression {
-    public:
-    std::string *name;
-
-    Identifier(std::string *n);
-    ~Identifier();
 
     std::string toString();
     void accept(AstVisitor *visitor);

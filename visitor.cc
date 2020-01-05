@@ -9,16 +9,16 @@ std::string StringVisitor::getResult() {
     return result;
 }
 
+void StringVisitor::visitIdentifier(Identifier *id) {
+    result.append(id->toString());
+}
+
 void StringVisitor::visitType(Type *type) {
     result.append(type->toString());
 }
 
 void StringVisitor::visitConstant(Constant *constant) {
     result.append(constant->toString());
-}
-
-void StringVisitor::visitIdentifier(Identifier *id) {
-    result.append(id->toString());
 }
 
 void StringVisitor::visitFunctionCall(FunctionCall *functionCall) {

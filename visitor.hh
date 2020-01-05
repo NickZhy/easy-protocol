@@ -10,11 +10,11 @@ class StringVisitor: public AstVisitor {
 
     std::string getResult();
 
+    void visitIdentifier(Identifier *id);
+
     void visitType(Type *type);
 
     void visitConstant(Constant *constant);
-
-    void visitIdentifier(Identifier *id);
 
     void visitFunctionCall(FunctionCall *functionCall);
 
