@@ -23,6 +23,10 @@ Type::~Type() {
     }
 }
 
+void Type::setDims(std::vector<Expression*> *d) {
+    dims = d;
+}
+
 std::string Type::toString() {
     std::string ret;
     if (isPrimitive) {
@@ -36,10 +40,9 @@ std::string Type::toString() {
     return ret;
 }
 
-void Type::setDims(std::vector<Expression*> *d) {
-    dims = d;
+void Type::accept(AstVisitor *visitor) {
+    visitor->visitType(this);
 }
-
 
 // Constant
 Constant::Constant(int v): type(TYP_INT), intVal(v) {}
@@ -78,6 +81,10 @@ std::string Constant::toString() {
     return ret;
 }
 
+void Constant::accept(AstVisitor *visitor) {
+    visitor->visitConstant(this);
+}
+
 // Identifier
 Identifier::Identifier(std::string *n): name(n) {}
 
@@ -87,6 +94,10 @@ Identifier::~Identifier() {
 
 std::string Identifier::toString() {
     return *name;
+}
+
+void Identifier::accept(AstVisitor *visitor) {
+    visitor->visitIdentifier(this);
 }
 
 // FunctionCall
@@ -102,6 +113,10 @@ std::string FunctionCall::toString() {
    return func->toString() + "(" + vec2str(args, ", ") + ")";
 }
 
+void FunctionCall::accept(AstVisitor *visitor) {
+    visitor->visitFunctionCall(this);
+}
+
 // IndexOf
 IndexOf::IndexOf(Ast *v, Ast *e): var(v), exp(e) {}
 
@@ -112,6 +127,10 @@ IndexOf::~IndexOf() {
 
 std::string IndexOf::toString() {
     return var->toString() + "[" + exp->toString() + "]";
+}
+
+void IndexOf::accept(AstVisitor *visitor) {
+    visitor->visitIndexOf(this);
 }
 
 // Access
@@ -126,6 +145,10 @@ std::string Access::toString() {
     return "(" + var->toString() + "." + field->toString() + ")";
 }
 
+void Access::accept(AstVisitor *visitor) {
+    visitor->visitAccess(this);
+}
+
 // TypeCast
 TypeCast::TypeCast(Type *t, Ast *e): type(t), exp(e) {}
 
@@ -138,6 +161,10 @@ std::string TypeCast::toString() {
     return "(" + type->toString() + " " + exp->toString() + ")";
 }
 
+void TypeCast::accept(AstVisitor *visitor) {
+    visitor->visitTypeCast(this);
+}
+
 // UnaOp
 UnaOp::UnaOp(int o, Ast *c): op(o), child(c) {}
 
@@ -147,6 +174,10 @@ UnaOp::~UnaOp() {
 
 std::string UnaOp::toString() {
     return "(" + op2str(op) + child->toString() + ")";
+}
+
+void UnaOp::accept(AstVisitor *visitor) {
+    visitor->visitUnaOp(this);
 }
 
 // IncDec
@@ -166,6 +197,10 @@ std::string IncDec::toString() {
     return ret + ")";
 }
 
+void IncDec::accept(AstVisitor *visitor) {
+    visitor->visitIncDec(this);
+}
+
 // BinOp
 BinOp::BinOp(int o, Ast *l, Ast *r): op(o), left(l), right(r) {}
 
@@ -176,6 +211,10 @@ BinOp::~BinOp() {
 
 std::string BinOp::toString() {
     return "(" + left->toString() + op2str(op) + right->toString() + ")";
+}
+
+void BinOp::accept(AstVisitor *visitor) {
+    visitor->visitBinOp(this);
 }
 
 // Assign
@@ -190,14 +229,26 @@ std::string Assign::toString() {
     return "(" + lval->toString() + op2str(op) + rval->toString() + ")";
 }
 
+void Assign::accept(AstVisitor *visitor) {
+    visitor->visitAssign(this);
+}
+
 // Break
 std::string Break::toString() {
     return "break";
 }
 
+void Break::accept(AstVisitor *visitor) {
+    visitor->visitBreak(this);
+}
+
 // Continue
 std::string Continue::toString() {
     return "continue";
+}
+
+void Continue::accept(AstVisitor *visitor) {
+    visitor->visitContinue(this);
 }
 
 // Return
@@ -215,6 +266,10 @@ std::string Return::toString() {
 	ret += " " + val->toString();
     }
     return ret;
+}
+
+void Return::accept(AstVisitor *visitor) {
+    visitor->visitReturn(this);
 }
 
 // Block
@@ -239,6 +294,10 @@ std::string Block::toString() {
     return ret;
 }
 
+void Block::accept(AstVisitor *visitor) {
+    visitor->visitBlock(this);
+}
+
 // ExpStatement
 ExpStatement::ExpStatement(Expression *e): exp(e) {}
 
@@ -248,6 +307,10 @@ ExpStatement::~ExpStatement() {
 
 std::string ExpStatement::toString() {
     return exp->toString();
+}
+
+void ExpStatement::accept(AstVisitor *visitor) {
+    visitor->visitExpStatement(this);
 }
 
 // VarDeclarator
@@ -266,6 +329,10 @@ std::string Declarator::toString() {
     return ret;
 }
 
+void Declarator::accept(AstVisitor *visitor) {
+    visitor->visitDeclarator(this);
+}
+
 // Declaration
 Declaration::Declaration(Type *t, std::vector<Declarator*> *v): type(t), varDecls(v) {}
 
@@ -277,6 +344,10 @@ Declaration::~Declaration() {
 
 std::string Declaration::toString() {
     return type->toString() + " " + vec2str(varDecls, " ");
+}
+
+void Declaration::accept(AstVisitor *visitor) {
+    visitor->visitDeclaration(this);
 }
 
 // IfStatement
@@ -300,6 +371,10 @@ std::string IfStatement::toString() {
     return ret;
 }
 
+void IfStatement::accept(AstVisitor *visitor) {
+    visitor->visitIfStatement(this);
+}
+
 // WhileStatement
 WhileStatement::WhileStatement(Expression *c, Statement *b): condition(c), body(b) {}
 
@@ -312,6 +387,10 @@ std::string WhileStatement::toString() {
     return "while (" + condition->toString() + ") " + body->toString();
 }
 
+void WhileStatement::accept(AstVisitor *visitor) {
+    visitor->visitWhileStatement(this);
+}
+
 // FormalParameter
 FormalParameter::FormalParameter(Type *t, Identifier *i): type(t), id(i) {}
 
@@ -322,6 +401,10 @@ FormalParameter::~FormalParameter() {
 
 std::string FormalParameter::toString() {
     return type->toString() + " " + id->toString();
+}
+
+void FormalParameter::accept(AstVisitor *visitor) {
+    visitor->visitFormalParameter(this);
 }
 
 // FunctionHeader
@@ -337,6 +420,10 @@ std::string FunctionHeader::toString() {
     return type->toString() + " " + id->toString() + "(" + vec2str(paramLst, " ") + ")";
 }
 
+void FunctionHeader::accept(AstVisitor *visitor) {
+    visitor->visitFunctionHeader(this);
+}
+
 // FunctionDeclaration
 FunctionDeclaration::FunctionDeclaration(FunctionHeader *h, Block *b): header(h), body(b) {}
 
@@ -347,6 +434,10 @@ FunctionDeclaration::~FunctionDeclaration() {
 
 std::string FunctionDeclaration::toString() {
     return header->toString() + " " + body->toString();
+}
+
+void FunctionDeclaration::accept(AstVisitor *visitor) {
+    visitor->visitFunctionDeclaration(this);
 }
 
 // StructDeclaration
@@ -360,4 +451,8 @@ StructDeclaration::~StructDeclaration() {
 
 std::string StructDeclaration::toString() {
     return "struct " + id->toString() + " {\n" + vec2str(body, "\n", "    ") + "\n}";
+}
+
+void StructDeclaration::accept(AstVisitor *visitor) {
+    visitor->visitStructDeclaration(this);
 }
