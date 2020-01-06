@@ -15,10 +15,6 @@ Identifier::~Identifier() {
     delete name;
 }
 
-std::string Identifier::toString() {
-    return *name;
-}
-
 void Identifier::accept(AstVisitor *visitor) {
     visitor->visitIdentifier(this);
 }
@@ -42,19 +38,6 @@ void Type::setDims(std::vector<Expression*> *d) {
     dims = d;
 }
 
-std::string Type::toString() {
-    std::string ret;
-    if (isPrimitive) {
-	ret = type2str(priType);
-    } else {
-	ret = refType->toString();
-    }
-    if (dims != NULL) {
-	ret += vec2str(dims, "", "[", "]");
-    }
-    return ret;
-}
-
 void Type::accept(AstVisitor *visitor) {
     visitor->visitType(this);
 }
@@ -65,36 +48,6 @@ Constant::Constant(int v): type(TYP_INT), intVal(v) {}
 Constant::Constant(float v): type(TYP_FLOAT), floatVal(v) {}
 
 Constant::~Constant() {}
-
-std::string Constant::toString() {
-    std::string ret;
-    switch (type) {
-	case TYP_BOOL:
-	    ret = (intVal != 0 ? "true" : "false");
-            break;
-	case TYP_BYTE: 
-	    ret = std::to_string(intVal) + "B";
-	    break;
-	case TYP_SHORT:
-	    ret = std::to_string(intVal) + "S";
-	    break;
-	case TYP_INT: 
-	    ret = std::to_string(intVal) + "I";
-	    break;
-	case TYP_LONG:
-	    ret = std::to_string(intVal) + "L";
-	    break;
-	case TYP_FLOAT: 
-	    ret = std::to_string(intVal) + "F";
-	    break;
-	case TYP_DOUBLE:
-	    ret = std::to_string(intVal) + "D";
-	    break;
-	default:
-	    ret = "illegal type";
-    }
-    return ret;
-}
 
 void Constant::accept(AstVisitor *visitor) {
     visitor->visitConstant(this);
@@ -109,10 +62,6 @@ FunctionCall::~FunctionCall() {
     delete args;
 }
 
-std::string FunctionCall::toString() {
-   return func->toString() + "(" + vec2str(args, ", ") + ")";
-}
-
 void FunctionCall::accept(AstVisitor *visitor) {
     visitor->visitFunctionCall(this);
 }
@@ -123,10 +72,6 @@ IndexOf::IndexOf(Ast *v, Ast *e): var(v), exp(e) {}
 IndexOf::~IndexOf() {
     delete var;
     delete exp;
-}
-
-std::string IndexOf::toString() {
-    return var->toString() + "[" + exp->toString() + "]";
 }
 
 void IndexOf::accept(AstVisitor *visitor) {
@@ -141,10 +86,6 @@ Access::~Access() {
     delete field;
 }
 
-std::string Access::toString() {
-    return "(" + var->toString() + "." + field->toString() + ")";
-}
-
 void Access::accept(AstVisitor *visitor) {
     visitor->visitAccess(this);
 }
@@ -155,10 +96,6 @@ TypeCast::TypeCast(Type *t, Ast *e): type(t), exp(e) {}
 TypeCast::~TypeCast() {
     delete type;
     delete exp;
-}
-
-std::string TypeCast::toString() {
-    return "(" + type->toString() + " " + exp->toString() + ")";
 }
 
 void TypeCast::accept(AstVisitor *visitor) {
@@ -172,10 +109,6 @@ UnaOp::~UnaOp() {
     delete child;
 }
 
-std::string UnaOp::toString() {
-    return "(" + op2str(op) + child->toString() + ")";
-}
-
 void UnaOp::accept(AstVisitor *visitor) {
     visitor->visitUnaOp(this);
 }
@@ -185,16 +118,6 @@ IncDec::IncDec(int o, bool p, Ast *c): op(o), isPrefix(p), child(c) {}
 
 IncDec::~IncDec() {
     delete child;
-}
-
-std::string IncDec::toString() {
-    std::string ret = "(";
-    if (isPrefix) {
-	ret += op2str(op) + child->toString();
-    } else {
-	ret += child->toString() + op2str(op);
-    }
-    return ret + ")";
 }
 
 void IncDec::accept(AstVisitor *visitor) {
@@ -209,10 +132,6 @@ BinOp::~BinOp() {
     delete right;
 }
 
-std::string BinOp::toString() {
-    return "(" + left->toString() + op2str(op) + right->toString() + ")";
-}
-
 void BinOp::accept(AstVisitor *visitor) {
     visitor->visitBinOp(this);
 }
@@ -225,28 +144,16 @@ Assign::~Assign() {
     delete rval;
 }
 
-std::string Assign::toString() {
-    return "(" + lval->toString() + op2str(op) + rval->toString() + ")";
-}
-
 void Assign::accept(AstVisitor *visitor) {
     visitor->visitAssign(this);
 }
 
 // Break
-std::string Break::toString() {
-    return "break";
-}
-
 void Break::accept(AstVisitor *visitor) {
     visitor->visitBreak(this);
 }
 
 // Continue
-std::string Continue::toString() {
-    return "continue";
-}
-
 void Continue::accept(AstVisitor *visitor) {
     visitor->visitContinue(this);
 }
@@ -258,14 +165,6 @@ Return::~Return() {
     if (val != NULL) {
 	delete val;
     }
-}
-
-std::string Return::toString() {
-    std::string ret = "return";
-    if (val != NULL) {
-	ret += " " + val->toString();
-    }
-    return ret;
 }
 
 void Return::accept(AstVisitor *visitor) {
@@ -280,20 +179,6 @@ Block::~Block() {
     delete stats;
 }
 
-std::string Block::toString() {
-    static int indLevel = 0;
-    const std::string INDENT("    ");
-
-    std::string indents;
-    for (int i = 0; i < indLevel; ++i) {
-	indents += INDENT;
-    }
-    ++indLevel;
-    std::string ret = "{\n" + vec2str(stats, "\n", indents + INDENT) + "\n" + indents + "}";
-    --indLevel;
-    return ret;
-}
-
 void Block::accept(AstVisitor *visitor) {
     visitor->visitBlock(this);
 }
@@ -303,10 +188,6 @@ ExpStatement::ExpStatement(Expression *e): exp(e) {}
 
 ExpStatement::~ExpStatement() {
     delete exp;
-}
-
-std::string ExpStatement::toString() {
-    return exp->toString();
 }
 
 void ExpStatement::accept(AstVisitor *visitor) {
@@ -321,14 +202,6 @@ Declarator::~Declarator() {
     delete exp;
 }
 
-std::string Declarator::toString() {
-    std::string ret = id->toString();
-    if (exp != NULL) {
-	ret += "=" + exp->toString();
-    }
-    return ret;
-}
-
 void Declarator::accept(AstVisitor *visitor) {
     visitor->visitDeclarator(this);
 }
@@ -340,10 +213,6 @@ Declaration::~Declaration() {
     delete type;
     delVec(varDecls);
     delete varDecls;
-}
-
-std::string Declaration::toString() {
-    return type->toString() + " " + vec2str(varDecls, " ");
 }
 
 void Declaration::accept(AstVisitor *visitor) {
@@ -363,14 +232,6 @@ IfStatement::~IfStatement() {
     delete second;
 }
 
-std::string IfStatement::toString() {
-    std::string ret = "if (" + condition->toString() + ") " + first->toString();
-    if (second != NULL) {
-	ret += " else " + second->toString();
-    }
-    return ret;
-}
-
 void IfStatement::accept(AstVisitor *visitor) {
     visitor->visitIfStatement(this);
 }
@@ -383,10 +244,6 @@ WhileStatement::~WhileStatement() {
     delete body;
 }
 
-std::string WhileStatement::toString() {
-    return "while (" + condition->toString() + ") " + body->toString();
-}
-
 void WhileStatement::accept(AstVisitor *visitor) {
     visitor->visitWhileStatement(this);
 }
@@ -397,10 +254,6 @@ FormalParameter::FormalParameter(Type *t, Identifier *i): type(t), id(i) {}
 FormalParameter::~FormalParameter() {
     delete type;
     delete id;
-}
-
-std::string FormalParameter::toString() {
-    return type->toString() + " " + id->toString();
 }
 
 void FormalParameter::accept(AstVisitor *visitor) {
@@ -416,10 +269,6 @@ FunctionHeader::~FunctionHeader() {
     delVec(paramLst);
 }
 
-std::string FunctionHeader::toString() {
-    return type->toString() + " " + id->toString() + "(" + vec2str(paramLst, " ") + ")";
-}
-
 void FunctionHeader::accept(AstVisitor *visitor) {
     visitor->visitFunctionHeader(this);
 }
@@ -430,10 +279,6 @@ FunctionDeclaration::FunctionDeclaration(FunctionHeader *h, Block *b): header(h)
 FunctionDeclaration::~FunctionDeclaration() {
     delete header;
     delete body;
-}
-
-std::string FunctionDeclaration::toString() {
-    return header->toString() + " " + body->toString();
 }
 
 void FunctionDeclaration::accept(AstVisitor *visitor) {
@@ -447,10 +292,6 @@ StructDeclaration::~StructDeclaration() {
     delete id;
     delVec(body);
     delete body;
-}
-
-std::string StructDeclaration::toString() {
-    return "struct " + id->toString() + " {\n" + vec2str(body, "\n", "    ") + "\n}";
 }
 
 void StructDeclaration::accept(AstVisitor *visitor) {

@@ -3,9 +3,28 @@
 
 #include "ast.hh"
 
-class StringVisitor: public AstVisitor {
+class ToStringVisitor: public AstVisitor {
+    private:
     std::string result;
+    int indentLevel;
+    static const std::string INDENT;
+
+    template <typename T>
+    void visitVec(std::vector<T*>* vec, std::string separator = " ", std::string before = "", std::string after = "") {
+        if (vec == NULL) return;
+        for (typename std::vector<T*>::iterator it = vec->begin(); it != vec->end(); ++it) {
+	    result.append(before);
+	    (*it)->accept(this);
+	    result.append(after);
+	    if (it != vec->end() - 1) {
+	        result.append(separator);
+	    }
+        }
+    }
+
     public:
+    ToStringVisitor();
+
     void clear();
 
     std::string getResult();

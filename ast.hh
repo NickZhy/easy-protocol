@@ -20,7 +20,6 @@ class Ast {
     public:
     virtual ~Ast() = 0;
 
-    virtual std::string toString() = 0;
     virtual void accept(AstVisitor*) = 0;
 };
 
@@ -35,7 +34,6 @@ class Identifier: public Expression {
     Identifier(std::string *n);
     ~Identifier();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -55,7 +53,6 @@ class Type: public Ast {
     ~Type();
     void setDims(std::vector<Expression*> *d);
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -72,7 +69,6 @@ class Constant: public Expression {
     Constant(float v);
     ~Constant();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -84,7 +80,6 @@ class FunctionCall: public Expression {
     FunctionCall(Ast *f, std::vector<Expression*> *a);
     ~FunctionCall();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -95,7 +90,6 @@ class IndexOf: public Expression {
     IndexOf(Ast *v, Ast *e);
     ~IndexOf();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -106,7 +100,6 @@ class Access: public Expression {
     Access(Ast *v, Ast *f);
     ~Access();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -118,7 +111,6 @@ class TypeCast: public Expression {
     TypeCast(Type *t, Ast* e);
     ~TypeCast();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -130,7 +122,6 @@ class UnaOp: public Expression {
     UnaOp(int o, Ast *c);
     ~UnaOp();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -143,7 +134,6 @@ class IncDec: public Expression {
     IncDec(int t, bool isPrefix, Ast *c);
     ~IncDec();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -155,7 +145,6 @@ class BinOp: public Expression {
     BinOp(int o, Ast *l, Ast *r);
     ~BinOp();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -167,20 +156,17 @@ class Assign: public Expression {
     Assign(int o, Ast *lv, Ast *rv);
     ~Assign();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
 // Statement
 class Break: public Statement {
     public:
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
 class Continue: public Statement {
     public:
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -191,7 +177,6 @@ class Return: public Statement {
     Return(Ast *v);
     ~Return();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -202,7 +187,6 @@ class Block: public Statement {
     Block(std::vector<Statement*> *s);
     ~Block();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -213,7 +197,6 @@ class ExpStatement: public Statement {
     ExpStatement(Expression *e);
     ~ExpStatement();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -225,7 +208,6 @@ class Declarator: public Ast {
     Declarator(Identifier *i, Expression *e);
     ~Declarator();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -237,7 +219,6 @@ class Declaration: public Statement {
     Declaration(Type *i, std::vector<Declarator*> *v);
     ~Declaration();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -249,7 +230,6 @@ class IfStatement: public Statement {
     IfStatement(Expression *c, Statement *f, Statement *s);
     ~IfStatement();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -261,7 +241,6 @@ class WhileStatement: public Statement {
     WhileStatement(Expression *c, Statement *b);
     ~WhileStatement();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -274,7 +253,6 @@ class FormalParameter: public Ast {
     FormalParameter(Type *t, Identifier *i);
     ~FormalParameter();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -287,18 +265,16 @@ class FunctionHeader: public Ast {
     FunctionHeader(Type *t, Identifier *i, std::vector<FormalParameter*> *p);
     ~FunctionHeader();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
 class FunctionDeclaration: public Ast {
+    public:
     FunctionHeader *header;
     Block *body;
-    public:
     FunctionDeclaration(FunctionHeader *h, Block *b);
     ~FunctionDeclaration();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
@@ -310,7 +286,6 @@ class StructDeclaration: public Ast {
     StructDeclaration(Identifier *i, std::vector<Declaration*> *b);
     ~StructDeclaration();
 
-    std::string toString();
     void accept(AstVisitor *visitor);
 };
 
