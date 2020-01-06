@@ -261,7 +261,7 @@ basic_stat
 | exp ';'		{ $$ = new ExpStatement($1); }
 | BREAK ';'		{ $$ = new Break(); }
 | CONTINUE ';'		{ $$ = new Continue(); }
-| RETURN ';'		{ $$ = new Return(NULL); }
+| RETURN ';'		{ $$ = new Return(nullptr); }
 | RETURN exp ';'	{ $$ = new Return($2); }
 ;
 
@@ -277,7 +277,7 @@ block_stat
 
 /* declaration */
 decl
-: id		{ $$ = new Declarator($1, NULL); }
+: id		{ $$ = new Declarator($1, nullptr); }
 | id '=' exp 	{ $$ = new Declarator($1, $3); }
 ;
 
@@ -301,7 +301,7 @@ decl_block
 
 /* if */
 if_stat
-: IF '(' exp ')' block_stat			{ $$ = new IfStatement($3, $5, NULL); }
+: IF '(' exp ')' block_stat			{ $$ = new IfStatement($3, $5, nullptr); }
 | IF '(' exp ')' block_stat ELSE block_stat	{ $$ = new IfStatement($3, $5, $7); }
 | IF '(' exp ')' block_stat ELSE if_stat	{ $$ = new IfStatement($3, $5, $7); }
 ;

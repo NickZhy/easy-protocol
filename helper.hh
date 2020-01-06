@@ -12,7 +12,7 @@ std::string op2str(int op);
 
 template <typename T>
 void delVec(std::vector<T*> *vec) {
-    if (vec == NULL) return;
+    if (vec == nullptr) return;
     for (typename std::vector<T*>::iterator it = vec->begin(); it != vec->end(); ++it) {
         delete (*it);
     }

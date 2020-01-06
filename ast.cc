@@ -20,15 +20,15 @@ void Identifier::accept(AstVisitor *visitor) {
 }
 
 // Type
-Type::Type(PrimitiveType t): isPrimitive(true), priType(t), dims(NULL) {}
+Type::Type(PrimitiveType t): isPrimitive(true), priType(t), dims(nullptr) {}
 
-Type::Type(Identifier *i): isPrimitive(false), refType(i), dims(NULL) {}
+Type::Type(Identifier *i): isPrimitive(false), refType(i), dims(nullptr) {}
 
 Type::~Type() {
     if (!isPrimitive) {
 	delete refType;
     }
-    if (dims != NULL) {
+    if (dims != nullptr) {
 	delVec(dims);
 	delete dims;
     }
@@ -162,7 +162,7 @@ void Continue::accept(AstVisitor *visitor) {
 Return::Return(Ast *v): val(v) {}
 
 Return::~Return() {
-    if (val != NULL) {
+    if (val != nullptr) {
 	delete val;
     }
 }

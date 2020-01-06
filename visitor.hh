@@ -11,7 +11,7 @@ class ToStringVisitor: public AstVisitor {
 
     template <typename T>
     void visitVec(std::vector<T*>* vec, std::string separator = " ", std::string before = "", std::string after = "") {
-        if (vec == NULL) return;
+        if (vec == nullptr) return;
         for (typename std::vector<T*>::iterator it = vec->begin(); it != vec->end(); ++it) {
 	    result.append(before);
 	    (*it)->accept(this);

@@ -23,7 +23,7 @@ void ToStringVisitor::visitType(Type *type) {
     } else {
         type->refType->accept(this);
     }
-    if(type->dims != NULL) {
+    if(type->dims != nullptr) {
         visitVec(type->dims, "", "[", "]");
     }
 }
@@ -133,7 +133,7 @@ void ToStringVisitor::visitContinue(Continue *ct) {
 
 void ToStringVisitor::visitReturn(Return *r) {
     result.append("return");
-    if(r->val != NULL) {
+    if(r->val != nullptr) {
         result.push_back(' ');
         r->val->accept(this);
     }
@@ -158,7 +158,7 @@ void ToStringVisitor::visitExpStatement(ExpStatement *expStatement) {
 
 void ToStringVisitor::visitDeclarator(Declarator *declarator) {
     declarator->id->accept(this);
-    if (declarator->exp != NULL) {
+    if (declarator->exp != nullptr) {
         result.append(" = ");
         declarator->exp->accept(this);
     }
@@ -175,7 +175,7 @@ void ToStringVisitor::visitIfStatement(IfStatement *ifStatement) {
     ifStatement->condition->accept(this);
     result.append(") ");
     ifStatement->first->accept(this);
-    if (ifStatement->second != NULL) {
+    if (ifStatement->second != nullptr) {
         result.append(" else ");
         ifStatement->second->accept(this);
     }
