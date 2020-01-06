@@ -35,22 +35,22 @@ void ToStringVisitor::visitConstant(Constant *constant) {
         result.append(std::to_string(constant->intVal));
         switch(constant->type) {
 	    case TYP_BYTE:
-                result.append("B");
+                result.push_back('B');
                 break;
             case TYP_SHORT:
-                result.append("S");
+                result.push_back('S');
                 break;
             case TYP_INT:
-                result.append("I");
+                result.push_back('I');
                 break;
             case TYP_LONG:
-                result.append("L");
+                result.push_back('L');
                 break;
             case TYP_FLOAT:
-                result.append("F");
+                result.push_back('F');
                 break;
             case TYP_DOUBLE:
-                result.append("D");
+                result.push_back('D');
                 break;
             default:
                 result.append("<illegal type>");
@@ -60,43 +60,43 @@ void ToStringVisitor::visitConstant(Constant *constant) {
 
 void ToStringVisitor::visitFunctionCall(FunctionCall *functionCall) {
     functionCall->func->accept(this);
-    result.append("(");
+    result.push_back('(');
     visitVec(functionCall->args, ", ");
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitIndexOf(IndexOf *indexOf) {
     indexOf->var->accept(this);
-    result.append("[");
+    result.push_back('[');
     indexOf->exp->accept(this);
-    result.append("]");
+    result.push_back(']');
 }
 
 void ToStringVisitor::visitAccess(Access *access) {
-    result.append("(");
+    result.push_back('(');
     access->var->accept(this);
-    result.append(".");
+    result.push_back('.');
     access->field->accept(this);
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitTypeCast(TypeCast *typeCast) {
-    result.append("(");
+    result.push_back('(');
     typeCast->type->accept(this);
-    result.append(" ");
+    result.push_back(' ');
     typeCast->exp->accept(this);
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitUnaOp(UnaOp *unaOp) {
-    result.append("(");
+    result.push_back('(');
     result.append(op2str(unaOp->op));
     unaOp->child->accept(this);
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitIncDec(IncDec *incDec) {
-    result.append("(");
+    result.push_back('(');
     if (incDec->isPrefix) {
         result.append(op2str(incDec->op));
         incDec->child->accept(this);
@@ -104,23 +104,23 @@ void ToStringVisitor::visitIncDec(IncDec *incDec) {
         incDec->child->accept(this);
         result.append(op2str(incDec->op));
     }
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitBinOp(BinOp *binOp) {
-    result.append("(");
+    result.push_back('(');
     binOp->left->accept(this);
     result.append(" " + op2str(binOp->op) + " ");
     binOp->right->accept(this);
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitAssign(Assign *assign) {
-    result.append("(");
+    result.push_back('(');
     assign->lval->accept(this);
     result.append(" " + op2str(assign->op) + " ");
     assign->rval->accept(this);
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitBreak(Break *bk) {
@@ -134,7 +134,7 @@ void ToStringVisitor::visitContinue(Continue *ct) {
 void ToStringVisitor::visitReturn(Return *r) {
     result.append("return");
     if(r->val != NULL) {
-        result.append(" ");
+        result.push_back(' ');
         r->val->accept(this);
     }
 }
@@ -166,7 +166,7 @@ void ToStringVisitor::visitDeclarator(Declarator *declarator) {
 
 void ToStringVisitor::visitDeclaration(Declaration *declaration) {
     declaration->type->accept(this);
-    result.append(" ");
+    result.push_back(' ');
     visitVec(declaration->varDecls, " ");
 }
 
@@ -190,22 +190,22 @@ void ToStringVisitor::visitWhileStatement(WhileStatement *whileStatement) {
 
 void ToStringVisitor::visitFormalParameter(FormalParameter *formalParameter) {
     formalParameter->type->accept(this);
-    result.append(" ");
+    result.push_back(' ');
     formalParameter->id->accept(this);
 }
 
 void ToStringVisitor::visitFunctionHeader(FunctionHeader *functionHeader) {
     functionHeader->type->accept(this);
-    result.append(" ");
+    result.push_back(' ');
     functionHeader->id->accept(this);
-    result.append("(");
+    result.push_back('(');
     visitVec(functionHeader->paramLst, ", ");
-    result.append(")");
+    result.push_back(')');
 }
 
 void ToStringVisitor::visitFunctionDeclaration(FunctionDeclaration *functionDeclaration) {
     functionDeclaration->header->accept(this);
-    result.append(" ");
+    result.push_back(' ');
     functionDeclaration->body->accept(this);
 }
 
