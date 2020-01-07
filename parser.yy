@@ -24,19 +24,19 @@
 %}
 
 %union {
-    int	intVal;
+    int intVal;
     float floatVal;
     std::string *strVal;
 
-    Ast	*node;
+    Ast *node;
     Identifier *id;
 
     Expression *exp;
     std::vector<Expression*> *expLst;
-    
+
     Declarator *declarator;
     std::vector<Declarator*> *declaratorLst;
-    
+
     Declaration *declaration;
     std::vector<Declaration*> *declarationLst;
 
@@ -46,7 +46,7 @@
 
     Type *type;
     PrimitiveType priType;
-    
+
     FormalParameter *para;
     std::vector<FormalParameter*> *paraLst;
 
@@ -111,7 +111,7 @@
 
 %%
 id
-: ID	{ $$ = new Identifier($1); }
+: ID    { $$ = new Identifier($1); }
 ;
 
 /* type */
@@ -121,52 +121,52 @@ type
 ;
 
 basic_type
-: TYPE		{ $$ = new Type($1); }
-| TYPE_NAME 	{ $$ = new Type(new Identifier($1)); }
+: TYPE          { $$ = new Type($1); }
+| TYPE_NAME     { $$ = new Type(new Identifier($1)); }
 ;
 
 array_type
-: basic_type dim_exp	{ $1->setDims($2); $$ = $1; }
+: basic_type dim_exp    { $1->setDims($2); $$ = $1; }
 ;
 
 dim_exp
-: '[' exp ']'		{ $$ = new std::vector<Expression*>(); $$->push_back($2); }
-| dim_exp '[' exp ']'	{ $1->push_back($3); $$ = $1; }
+: '[' exp ']'           { $$ = new std::vector<Expression*>(); $$->push_back($2); }
+| dim_exp '[' exp ']'   { $1->push_back($3); $$ = $1; }
 ;
 
 /* arguments */
 arg_lst
-:			{ $$ = new std::vector<Expression*>(); }
-| exp			{ $$ = new std::vector<Expression*>(); $$->push_back($1); }
-| arg_lst ',' exp	{ $1->push_back($3); $$ = $1; }
+:                       { $$ = new std::vector<Expression*>(); }
+| exp                   { $$ = new std::vector<Expression*>(); $$->push_back($1); }
+| arg_lst ',' exp       { $1->push_back($3); $$ = $1; }
 ;
 
 /* term */
 term0
-: id 		{ $$ = $1; }
-| INT_CON	{ $$ = new Constant($1); }
-| FLOAT_CON	{ $$ = new Constant($1); }
-| '(' exp ')'	{ $$ = $2; }
+: id            { $$ = $1; }
+| INT_CON       { $$ = new Constant($1); }
+| FLOAT_CON     { $$ = new Constant($1); }
+| '(' exp ')'   { $$ = $2; }
 ;
 
 term1
 : term0
-| term1 INC 		{ $$ = new IncDec(INC, false, $1); }
-| term1 DEC		{ $$ = new IncDec(DEC, false, $1); }
-| term1 '(' arg_lst ')'	{ $$ = new FunctionCall($1, $3); }
-| term1 '[' exp ']'	{ $$ = new IndexOf($1, $3); }
-| term1 '.' term0	{ $$ = new Access($1, $3); }
+| term1 INC             { $$ = new UnaOp(OP_POS_INC, $1); }
+| term1 DEC             { $$ = new UnaOp(OP_POS_DEC, $1); }
+| term1 '(' arg_lst ')' { $$ = new FunctionCall($1, $3); }
+| term1 '[' exp ']'     { $$ = new IndexOf($1, $3); }
+| term1 '.' term0       { $$ = new Access($1, $3); }
 ;
 
 term2
 : term1
-| INC term2	{ $$ = new IncDec(INC, true, $2); }
-| DEC term2	{ $$ = new IncDec(DEC, true, $2); }
-| '+' term2	{ $$ = new UnaOp('+', $2); }
-| '-' term2	{ $$ = new UnaOp('-', $2); }
-| '!' term2	{ $$ = new UnaOp('!', $2); }
-| '~' term2	{ $$ = new UnaOp('~', $2); }
-| '(' type ')' term2	{ $$ = new TypeCast($2, $4); } 
+| INC term2     { $$ = new UnaOp(OP_PRE_INC, $2); }
+| DEC term2     { $$ = new UnaOp(OP_PRE_DEC, $2); }
+| '+' term2     { $$ = new UnaOp(OP_POS, $2); }
+| '-' term2     { $$ = new UnaOp(OP_NEG, $2); }
+| '!' term2     { $$ = new UnaOp(OP_NOT, $2); }
+| '~' term2     { $$ = new UnaOp(OP_BNOT, $2); }
+| '(' type ')' term2    { $$ = new TypeCast($2, $4); }
 ;
 
 term: term2;
@@ -174,75 +174,75 @@ term: term2;
 /* expression */
 exp0
 : term
-| exp0 '*' term { $$ = new BinOp('*', $1, $3); }
-| exp0 '/' term { $$ = new BinOp('/', $1, $3); }
-| exp0 '%' term { $$ = new BinOp('%', $1, $3); }
+| exp0 '*' term { $$ = new BinOp(OP_MUL, $1, $3); }
+| exp0 '/' term { $$ = new BinOp(OP_DIV, $1, $3); }
+| exp0 '%' term { $$ = new BinOp(OP_MOD, $1, $3); }
 ;
 
 exp1
 : exp0
-| exp1 '+' exp0 { $$ = new BinOp('+', $1, $3); }
-| exp1 '-' exp0 { $$ = new BinOp('-', $1, $3); }
+| exp1 '+' exp0 { $$ = new BinOp(OP_ADD, $1, $3); }
+| exp1 '-' exp0 { $$ = new BinOp(OP_SUB, $1, $3); }
 ;
 
 exp2
 : exp1
-| exp2 LSH exp1	{ $$ = new BinOp(LSH, $1, $3); }
-| exp2 RSH exp1	{ $$ = new BinOp(RSH, $1, $3); }
+| exp2 LSH exp1 { $$ = new BinOp(OP_LSH, $1, $3); }
+| exp2 RSH exp1 { $$ = new BinOp(OP_RSH, $1, $3); }
 ;
 
 exp3
 : exp2
-| exp3 '<' exp2 { $$ = new BinOp('<', $1, $3); }
-| exp3 '>' exp2 { $$ = new BinOp('>', $1, $3); }
-| exp3 LE exp2	{ $$ = new BinOp(LE, $1, $3); }
-| exp3 GE exp2	{ $$ = new BinOp(GE, $1, $3); }
+| exp3 '<' exp2 { $$ = new BinOp(OP_LT, $1, $3); }
+| exp3 '>' exp2 { $$ = new BinOp(OP_GR, $1, $3); }
+| exp3 LE exp2  { $$ = new BinOp(OP_LE, $1, $3); }
+| exp3 GE exp2  { $$ = new BinOp(OP_GE, $1, $3); }
 ;
 
 exp4
 : exp3
-| exp4 EQ exp3	{ $$ = new BinOp(EQ, $1, $3); }
-| exp4 NEQ exp3	{ $$ = new BinOp(NEQ, $1, $3); }
+| exp4 EQ exp3  { $$ = new BinOp(OP_EQ, $1, $3); }
+| exp4 NEQ exp3 { $$ = new BinOp(OP_NEQ, $1, $3); }
 ;
 
 exp5
-: exp4 
-| exp5 '&' exp4	{ $$ = new BinOp('&', $1, $3); }
+: exp4
+| exp5 '&' exp4 { $$ = new BinOp(OP_BAND, $1, $3); }
 ;
 
 exp6
 : exp5
-| exp6 '^' exp5 { $$ = new BinOp('^', $1, $3); }
+| exp6 '^' exp5 { $$ = new BinOp(OP_BXOR, $1, $3); }
 ;
 
 exp7
 : exp6
-| exp7 '|' exp6 { $$ = new BinOp('|', $1, $3); }
+| exp7 '|' exp6 { $$ = new BinOp(OP_BOR, $1, $3); }
 ;
 
 exp8
 : exp7
-| exp8 AND exp7 { $$ = new BinOp(AND, $1, $3); }
+| exp8 AND exp7 { $$ = new BinOp(OP_AND, $1, $3); }
 ;
 
 exp9
 : exp8
-| exp9 OR exp8	{ $$ = new BinOp(OR, $1, $3); }
+| exp9 OR exp8  { $$ = new BinOp(OP_OR, $1, $3); }
 ;
 
 exp10
 : exp9
-| exp9 '=' exp10	{ $$ = new Assign('=', $1, $3); }
-| exp9 ADD_ASG exp10	{ $$ = new Assign(ADD_ASG, $1, $3); }
-| exp9 SUB_ASG exp10	{ $$ = new Assign(SUB_ASG, $1, $3); }
-| exp9 MUL_ASG exp10	{ $$ = new Assign(MUL_ASG, $1, $3); }
-| exp9 DIV_ASG exp10	{ $$ = new Assign(DIV_ASG, $1, $3); }
-| exp9 MOD_ASG exp10	{ $$ = new Assign(MOD_ASG, $1, $3); }
-| exp9 XOR_ASG exp10	{ $$ = new Assign(XOR_ASG, $1, $3); }
-| exp9 AND_ASG exp10	{ $$ = new Assign(AND_ASG, $1, $3); }
-| exp9 OR_ASG exp10	{ $$ = new Assign(OR_ASG, $1, $3); }
-| exp9 LSH_ASG exp10	{ $$ = new Assign(LSH_ASG, $1, $3); }
-| exp9 RSH_ASG exp10	{ $$ = new Assign(RSH_ASG, $1, $3); }
+| exp9 '=' exp10        { $$ = new Assign(ASG_NORM, $1, $3); }
+| exp9 ADD_ASG exp10    { $$ = new Assign(ASG_ADD, $1, $3); }
+| exp9 SUB_ASG exp10    { $$ = new Assign(ASG_SUB, $1, $3); }
+| exp9 MUL_ASG exp10    { $$ = new Assign(ASG_MUL, $1, $3); }
+| exp9 DIV_ASG exp10    { $$ = new Assign(ASG_DIV, $1, $3); }
+| exp9 MOD_ASG exp10    { $$ = new Assign(ASG_MOD, $1, $3); }
+| exp9 XOR_ASG exp10    { $$ = new Assign(ASG_XOR, $1, $3); }
+| exp9 AND_ASG exp10    { $$ = new Assign(ASG_AND, $1, $3); }
+| exp9 OR_ASG exp10     { $$ = new Assign(ASG_OR, $1, $3); }
+| exp9 LSH_ASG exp10    { $$ = new Assign(ASG_LSH, $1, $3); }
+| exp9 RSH_ASG exp10    { $$ = new Assign(ASG_RSH, $1, $3); }
 ;
 
 exp: exp10;
@@ -257,90 +257,90 @@ stat
 
 /* basic statement */
 basic_stat
-: decl_stat             { $$ = $1; } 
-| exp ';'		{ $$ = new ExpStatement($1); }
-| BREAK ';'		{ $$ = new Break(); }
-| CONTINUE ';'		{ $$ = new Continue(); }
-| RETURN ';'		{ $$ = new Return(nullptr); }
-| RETURN exp ';'	{ $$ = new Return($2); }
+: decl_stat         { $$ = $1; }
+| exp ';'           { $$ = new ExpStatement($1); }
+| BREAK ';'         { $$ = new Break(); }
+| CONTINUE ';'      { $$ = new Continue(); }
+| RETURN ';'        { $$ = new Return(nullptr); }
+| RETURN exp ';'    { $$ = new Return($2); }
 ;
 
-/* block */ 
+/* block */
 stat_lst
-:		{ $$ = new std::vector<Statement*>(); }
-| stat_lst stat	{ $1->push_back($2); $$ = $1; }
+:               { $$ = new std::vector<Statement*>(); }
+| stat_lst stat { $1->push_back($2); $$ = $1; }
 ;
 
 block_stat
-: '{' stat_lst '}'	{ $$ = new Block($2); }
+: '{' stat_lst '}'  { $$ = new Block($2); }
 ;
 
 /* declaration */
 decl
-: id		{ $$ = new Declarator($1, nullptr); }
-| id '=' exp 	{ $$ = new Declarator($1, $3); }
+: id            { $$ = new Declarator($1, nullptr); }
+| id '=' exp    { $$ = new Declarator($1, $3); }
 ;
 
 decl_lst
-: decl			{ $$ = new std::vector<Declarator*>(); $$->push_back($1); }
-| decl_lst ',' decl	{ $1->push_back($3); $$ = $1; }
+: decl              { $$ = new std::vector<Declarator*>(); $$->push_back($1); }
+| decl_lst ',' decl { $1->push_back($3); $$ = $1; }
 ;
 
 decl_stat
-: type decl_lst ';'	{ $$ = new Declaration($1, $2); }
+: type decl_lst ';' { $$ = new Declaration($1, $2); }
 ;
 
 decl_stat_lst
-:				{ $$ = new std::vector<Declaration*>(); }
-| decl_stat_lst decl_stat	{ $1->push_back($2); $$ = $1; }
+:                           { $$ = new std::vector<Declaration*>(); }
+| decl_stat_lst decl_stat   { $1->push_back($2); $$ = $1; }
 ;
 
 decl_block
-: '{' decl_stat_lst '}'	{ $$ = $2; }
+: '{' decl_stat_lst '}' { $$ = $2; }
 ;
 
 /* if */
 if_stat
-: IF '(' exp ')' block_stat			{ $$ = new IfStatement($3, $5, nullptr); }
-| IF '(' exp ')' block_stat ELSE block_stat	{ $$ = new IfStatement($3, $5, $7); }
-| IF '(' exp ')' block_stat ELSE if_stat	{ $$ = new IfStatement($3, $5, $7); }
+: IF '(' exp ')' block_stat                 { $$ = new IfStatement($3, $5, nullptr); }
+| IF '(' exp ')' block_stat ELSE block_stat { $$ = new IfStatement($3, $5, $7); }
+| IF '(' exp ')' block_stat ELSE if_stat    { $$ = new IfStatement($3, $5, $7); }
 ;
 
 /* while */
 while_stat
-: WHILE '(' exp ')' block_stat	{ $$ = new WhileStatement($3, $5); }
+: WHILE '(' exp ')' block_stat  { $$ = new WhileStatement($3, $5); }
 ;
 
 /* function */
 formal_para
-: type id	{ $$ = new FormalParameter($1, $2); }
+: type id   { $$ = new FormalParameter($1, $2); }
 ;
 
 formal_para_lst
-:				{ $$ = new std::vector<FormalParameter*>(); }
-| formal_para_lst formal_para	{ $1->push_back($2); $$ = $1; }
+:                               { $$ = new std::vector<FormalParameter*>(); }
+| formal_para_lst formal_para   { $1->push_back($2); $$ = $1; }
 ;
 
 function_header
-: type id '(' formal_para_lst ')'	{ $$ = new FunctionHeader($1, $2, $4); }
+: type id '(' formal_para_lst ')'   { $$ = new FunctionHeader($1, $2, $4); }
 ;
 
 function_decl
-: function_header block_stat	{ $$ = new FunctionDeclaration($1, $2); }
+: function_header block_stat    { $$ = new FunctionDeclaration($1, $2); }
 ;
 
 /* struct and union */
 struct_name
-: STRUCT id	{ $$ = $2; }
+: STRUCT id { $$ = $2; }
 ;
 
 struct_decl
-: struct_name decl_block	{ $$ = new StructDeclaration($1, $2); }
+: struct_name decl_block    { $$ = new StructDeclaration($1, $2); }
 ;
 
 /* top level statement */
 top_level_stat
-: function_decl	{ astLst.push_back($1); }
+: function_decl { astLst.push_back($1); }
 | struct_decl   { astLst.push_back($1); yyget_extra(scanner)->insert(*($1->id->name)); }
 ;
 

@@ -2,7 +2,6 @@
 #include <vector>
 
 #include "ast.hh"
-#include "parser.tab.hh"
 #include "helper.hh"
 
 // Ast virtual destructor
@@ -26,11 +25,11 @@ Type::Type(Identifier *i): isPrimitive(false), refType(i), dims(nullptr) {}
 
 Type::~Type() {
     if (!isPrimitive) {
-	delete refType;
+        delete refType;
     }
     if (dims != nullptr) {
-	delVec(dims);
-	delete dims;
+        delVec(dims);
+        delete dims;
     }
 }
 
@@ -103,7 +102,7 @@ void TypeCast::accept(AstVisitor *visitor) {
 }
 
 // UnaOp
-UnaOp::UnaOp(int o, Ast *c): op(o), child(c) {}
+UnaOp::UnaOp(UnaryOperator o, Ast *c): op(o), child(c) {}
 
 UnaOp::~UnaOp() {
     delete child;
@@ -113,19 +112,8 @@ void UnaOp::accept(AstVisitor *visitor) {
     visitor->visitUnaOp(this);
 }
 
-// IncDec
-IncDec::IncDec(int o, bool p, Ast *c): op(o), isPrefix(p), child(c) {}
-
-IncDec::~IncDec() {
-    delete child;
-}
-
-void IncDec::accept(AstVisitor *visitor) {
-    visitor->visitIncDec(this);
-}
-
 // BinOp
-BinOp::BinOp(int o, Ast *l, Ast *r): op(o), left(l), right(r) {}
+BinOp::BinOp(BinaryOperator o, Ast *l, Ast *r): op(o), left(l), right(r) {}
 
 BinOp::~BinOp() {
     delete left;
@@ -137,7 +125,7 @@ void BinOp::accept(AstVisitor *visitor) {
 }
 
 // Assign
-Assign::Assign(int o, Ast *lv, Ast *rv): op(o), lval(lv), rval(rv) {}
+Assign::Assign(AssignOperator o, Ast *lv, Ast *rv): op(o), lval(lv), rval(rv) {}
 
 Assign::~Assign() {
     delete lval;
@@ -163,7 +151,7 @@ Return::Return(Ast *v): val(v) {}
 
 Return::~Return() {
     if (val != nullptr) {
-	delete val;
+        delete val;
     }
 }
 
@@ -221,9 +209,9 @@ void Declaration::accept(AstVisitor *visitor) {
 
 // IfStatement
 IfStatement::IfStatement(
-	Expression *c,
-	Statement *f,
-	Statement *s
+    Expression *c,
+    Statement *f,
+    Statement *s
 ): condition(c), first(f), second(s) {}
 
 IfStatement::~IfStatement() {

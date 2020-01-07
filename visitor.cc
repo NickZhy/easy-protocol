@@ -90,19 +90,12 @@ void ToStringVisitor::visitTypeCast(TypeCast *typeCast) {
 
 void ToStringVisitor::visitUnaOp(UnaOp *unaOp) {
     result.push_back('(');
-    result.append(op2str(unaOp->op));
-    unaOp->child->accept(this);
-    result.push_back(')');
-}
-
-void ToStringVisitor::visitIncDec(IncDec *incDec) {
-    result.push_back('(');
-    if (incDec->isPrefix) {
-        result.append(op2str(incDec->op));
-        incDec->child->accept(this);
+    if(unaOp->op == OP_POS_INC || unaOp->op == OP_POS_DEC) {
+        unaOp->child->accept(this);
+        result.append(op2str(unaOp->op));
     } else {
-        incDec->child->accept(this);
-        result.append(op2str(incDec->op));
+        result.append(op2str(unaOp->op));
+        unaOp->child->accept(this);
     }
     result.push_back(')');
 }

@@ -8,7 +8,9 @@
 
 std::string type2str(PrimitiveType type);
 
-std::string op2str(int op);
+std::string op2str(UnaryOperator op);
+std::string op2str(BinaryOperator op);
+std::string op2str(AssignOperator op);
 
 template <typename T>
 void delVec(std::vector<T*> *vec) {

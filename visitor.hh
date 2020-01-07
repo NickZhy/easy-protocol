@@ -13,12 +13,12 @@ class ToStringVisitor: public AstVisitor {
     void visitVec(std::vector<T*>* vec, std::string separator = " ", std::string before = "", std::string after = "") {
         if (vec == nullptr) return;
         for (typename std::vector<T*>::iterator it = vec->begin(); it != vec->end(); ++it) {
-	    result.append(before);
-	    (*it)->accept(this);
-	    result.append(after);
-	    if (it != vec->end() - 1) {
-	        result.append(separator);
-	    }
+            result.append(before);
+            (*it)->accept(this);
+            result.append(after);
+            if (it != vec->end() - 1) {
+                result.append(separator);
+            }
         }
     }
 
@@ -44,8 +44,6 @@ class ToStringVisitor: public AstVisitor {
     void visitTypeCast(TypeCast *typeCast);
 
     void visitUnaOp(UnaOp *unaOp);
-
-    void visitIncDec(IncDec *incDec);
 
     void visitBinOp(BinOp *binOp);
 
@@ -77,5 +75,4 @@ class ToStringVisitor: public AstVisitor {
 
     void visitStructDeclaration(StructDeclaration *structDeclaration);
 };
-
 #endif

@@ -24,27 +24,27 @@
         }
 %}
 
-EXP	([Ee][-+]?[0-9]+)
+EXP     ([Ee][-+]?[0-9]+)
 
 %%
 
-"bool"	{ yylval->priType = TYP_BOOL; return TYPE; }
-"byte"	{ yylval->priType = TYP_BYTE; return TYPE; }
-"short"	{ yylval->priType = TYP_SHORT; return TYPE; }
-"int"	{ yylval->priType = TYP_INT; return TYPE; }
-"long"	{ yylval->priType = TYP_LONG; return TYPE; }
-"float"	{ yylval->priType = TYP_FLOAT; return TYPE; }
-"double"	{ yylval->priType = TYP_DOUBLE; return TYPE; }
+"bool"      { yylval->priType = TYP_BOOL; return TYPE; }
+"byte"      { yylval->priType = TYP_BYTE; return TYPE; }
+"short"     { yylval->priType = TYP_SHORT; return TYPE; }
+"int"       { yylval->priType = TYP_INT; return TYPE; }
+"long"      { yylval->priType = TYP_LONG; return TYPE; }
+"float"     { yylval->priType = TYP_FLOAT; return TYPE; }
+"double"    { yylval->priType = TYP_DOUBLE; return TYPE; }
 
-"if"	{ return IF; }
-"else"	{ return ELSE; }
-"while"	{ return WHILE; }
+"if"    { return IF; }
+"else"  { return ELSE; }
+"while" { return WHILE; }
 
-"break"		{ return BREAK; }
-"continue"	{ return CONTINUE; }
-"return"	{ return RETURN; }
+"break"         { return BREAK; }
+"continue"      { return CONTINUE; }
+"return"        { return RETURN; }
 
-"struct"	{ return STRUCT; }
+"struct"        { return STRUCT; }
 
 
 "+" | 
@@ -60,10 +60,8 @@ EXP	([Ee][-+]?[0-9]+)
 "~" |
 "!" |
 
-"." |
 "<" |
 ">" |
-":" |
 
 "(" |
 ")" |
@@ -72,42 +70,43 @@ EXP	([Ee][-+]?[0-9]+)
 "{" |
 "}" |
 "=" |
+"." |
 "," |
-";"	{ return yytext[0]; }
+";"     { return yytext[0]; }
 
-"&&"	{ return AND; }
-"||"	{ return OR; }
+"&&"    { return AND; }
+"||"    { return OR; }
 
-"++"	{ return INC; }
-"--"	{ return DEC; }
+"++"    { return INC; }
+"--"    { return DEC; }
 
-"<<"	{ return LSH; }
-">>"	{ return RSH; }
+"<<"    { return LSH; }
+">>"    { return RSH; }
 
-"<="	{ return LE; }
-">="	{ return GE; }
-"=="	{ return EQ; }
-"!="	{ return NEQ; }
+"<="    { return LE; }
+">="    { return GE; }
+"=="    { return EQ; }
+"!="    { return NEQ; }
 
-"+="	{ return ADD_ASG; }
-"-="	{ return SUB_ASG; }
-"*="	{ return MUL_ASG; }
-"/="	{ return DIV_ASG; }
-"%="	{ return MOD_ASG; }
-"^="	{ return XOR_ASG; }
-"&="	{ return AND_ASG; }
-"|="	{ return OR_ASG; }
-"<<="	{ return LSH_ASG; }
-">>="	{ return RSH_ASG; }
+"+="    { return ADD_ASG; }
+"-="    { return SUB_ASG; }
+"*="    { return MUL_ASG; }
+"/="    { return DIV_ASG; }
+"%="    { return MOD_ASG; }
+"^="    { return XOR_ASG; }
+"&="    { return AND_ASG; }
+"|="    { return OR_ASG; }
+"<<="   { return LSH_ASG; }
+">>="   { return RSH_ASG; }
 
-[a-zA-Z_]+[a-zA-Z_0-9]*	{ yylval->strVal = new std::string(yytext); return yyextra->count(yytext) ? TYPE_NAME : ID; }
-[0-9]+	                { yylval->intVal = atoi(yytext); return INT_CON; }
+[a-zA-Z_]+[a-zA-Z_0-9]* { yylval->strVal = new std::string(yytext); return yyextra->count(yytext) ? TYPE_NAME : ID; }
+[0-9]+                  { yylval->intVal = atoi(yytext); return INT_CON; }
 
 [0-9]+"."[0-9]*{EXP}? |
-"."?[0-9]+{EXP}?	{ yylval->floatVal = atof(yytext); return FLOAT_CON; }
+"."?[0-9]+{EXP}?        { yylval->floatVal = atof(yytext); return FLOAT_CON; }
 
-[ \t]+	{ }
-\n	{ }
+[ \t]+  { }
+\n      { }
 
 <<EOF>> { return TOK_EOF; }
 %%

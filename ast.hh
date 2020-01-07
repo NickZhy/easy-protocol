@@ -6,7 +6,7 @@
 
 class AstVisitor;
 
-typedef enum PrimitiveType {
+typedef enum {
     TYP_BOOL,
     TYP_BYTE,
     TYP_SHORT,
@@ -15,6 +15,52 @@ typedef enum PrimitiveType {
     TYP_FLOAT,
     TYP_DOUBLE
 } PrimitiveType;
+
+typedef enum {
+    OP_POS,
+    OP_NEG,
+    OP_NOT,
+    OP_BNOT,
+    OP_PRE_INC,
+    OP_POS_INC,
+    OP_PRE_DEC,
+    OP_POS_DEC
+} UnaryOperator;
+
+typedef enum {
+    OP_ADD,
+    OP_SUB,
+    OP_MUL,
+    OP_DIV,
+    OP_MOD,
+    OP_AND,
+    OP_OR,
+    OP_BXOR,
+    OP_BAND,
+    OP_BOR,
+    OP_LSH,
+    OP_RSH,
+    OP_LT,
+    OP_GR,
+    OP_LE,
+    OP_GE,
+    OP_EQ,
+    OP_NEQ
+} BinaryOperator;
+
+typedef enum {
+    ASG_NORM,
+    ASG_ADD,
+    ASG_SUB,
+    ASG_MUL,
+    ASG_DIV,
+    ASG_MOD,
+    ASG_XOR,
+    ASG_AND,
+    ASG_OR,
+    ASG_LSH,
+    ASG_RSH
+} AssignOperator;
 
 class Ast {
     public:
@@ -42,8 +88,8 @@ class Type: public Ast {
     public:
     bool isPrimitive;
     union {
-	PrimitiveType priType;
-	Identifier *refType;
+        PrimitiveType priType;
+        Identifier *refType;
     };
     // A list of expressions holding the size of dimensions.
     std::vector<Expression*> *dims;
@@ -62,8 +108,8 @@ class Constant: public Expression {
     PrimitiveType type;
 
     union {
-	int intVal;
-	float floatVal;
+        int intVal;
+        float floatVal;
     };
     Constant(int v);
     Constant(float v);
@@ -116,33 +162,21 @@ class TypeCast: public Expression {
 
 class UnaOp: public Expression {
     public:
-    int op;
+    UnaryOperator op;
     Ast *child;
 
-    UnaOp(int o, Ast *c);
+    UnaOp(UnaryOperator o, Ast *c);
     ~UnaOp();
-
-    void accept(AstVisitor *visitor);
-};
-
-class IncDec: public Expression {
-    public:
-    int op;
-    bool isPrefix;
-    Ast *child;
-
-    IncDec(int t, bool isPrefix, Ast *c);
-    ~IncDec();
 
     void accept(AstVisitor *visitor);
 };
 
 class BinOp: public Expression {
     public:
-    int op;
+    BinaryOperator op;
     Ast *left, *right;
 
-    BinOp(int o, Ast *l, Ast *r);
+    BinOp(BinaryOperator o, Ast *l, Ast *r);
     ~BinOp();
 
     void accept(AstVisitor *visitor);
@@ -150,10 +184,10 @@ class BinOp: public Expression {
 
 class Assign: public Expression {
     public:
-    int op;
+    AssignOperator op;
     Ast *lval, *rval;
 
-    Assign(int o, Ast *lv, Ast *rv);
+    Assign(AssignOperator o, Ast *lv, Ast *rv);
     ~Assign();
 
     void accept(AstVisitor *visitor);
@@ -306,8 +340,6 @@ class AstVisitor {
     virtual void visitTypeCast(TypeCast *typeCast) = 0;
 
     virtual void visitUnaOp(UnaOp *unaOp) = 0;
-
-    virtual void visitIncDec(IncDec *incDec) = 0;
 
     virtual void visitBinOp(BinOp *binOp) = 0;
 
