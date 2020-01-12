@@ -75,4 +75,5 @@ class ToStringVisitor: public AstVisitor {
 
     void visitStructDeclaration(StructDeclaration *structDeclaration);
 };
+
 #endif

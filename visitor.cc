@@ -68,7 +68,7 @@ void ToStringVisitor::visitFunctionCall(FunctionCall *functionCall) {
 void ToStringVisitor::visitIndexOf(IndexOf *indexOf) {
     indexOf->var->accept(this);
     result.push_back('[');
-    indexOf->exp->accept(this);
+    indexOf->idx->accept(this);
     result.push_back(']');
 }
 
@@ -84,18 +84,18 @@ void ToStringVisitor::visitTypeCast(TypeCast *typeCast) {
     result.push_back('(');
     typeCast->type->accept(this);
     result.push_back(' ');
-    typeCast->exp->accept(this);
+    typeCast->expr->accept(this);
     result.push_back(')');
 }
 
 void ToStringVisitor::visitUnaOp(UnaOp *unaOp) {
     result.push_back('(');
     if(unaOp->op == OP_POS_INC || unaOp->op == OP_POS_DEC) {
-        unaOp->child->accept(this);
+        unaOp->expr->accept(this);
         result.append(op2str(unaOp->op));
     } else {
         result.append(op2str(unaOp->op));
-        unaOp->child->accept(this);
+        unaOp->expr->accept(this);
     }
     result.push_back(')');
 }
@@ -126,9 +126,9 @@ void ToStringVisitor::visitContinue(Continue *ct) {
 
 void ToStringVisitor::visitReturn(Return *r) {
     result.append("return");
-    if(r->val != nullptr) {
+    if(r->var != nullptr) {
         result.push_back(' ');
-        r->val->accept(this);
+        r->var->accept(this);
     }
 }
 
@@ -146,7 +146,7 @@ void ToStringVisitor::visitBlock(Block *block) {
 }
 
 void ToStringVisitor::visitExpStatement(ExpStatement *expStatement) {
-    expStatement->exp->accept(this);
+    expStatement->expr->accept(this);
 }
 
 void ToStringVisitor::visitDeclarator(Declarator *declarator) {

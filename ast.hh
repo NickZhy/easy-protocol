@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-class AstVisitor;
-
 typedef enum {
     TYP_BOOL,
     TYP_BYTE,
@@ -61,6 +59,8 @@ typedef enum {
     ASG_LSH,
     ASG_RSH
 } AssignOperator;
+
+class AstVisitor;
 
 class Ast {
     public:
@@ -120,10 +120,10 @@ class Constant: public Expression {
 
 class FunctionCall: public Expression {
     public:
-    Ast *func;
+    Expression *func;
     std::vector<Expression*> *args;
 
-    FunctionCall(Ast *f, std::vector<Expression*> *a);
+    FunctionCall(Expression *f, std::vector<Expression*> *a);
     ~FunctionCall();
 
     void accept(AstVisitor *visitor);
@@ -131,9 +131,9 @@ class FunctionCall: public Expression {
 
 class IndexOf: public Expression {
     public:
-    Ast *var, *exp;
+    Expression *var, *idx;
 
-    IndexOf(Ast *v, Ast *e);
+    IndexOf(Expression *v, Expression *i);
     ~IndexOf();
 
     void accept(AstVisitor *visitor);
@@ -141,9 +141,9 @@ class IndexOf: public Expression {
 
 class Access: public Expression {
     public:
-    Ast *var, *field;
+    Expression *var, *field;
 
-    Access(Ast *v, Ast *f);
+    Access(Expression *v, Expression *f);
     ~Access();
 
     void accept(AstVisitor *visitor);
@@ -152,9 +152,9 @@ class Access: public Expression {
 class TypeCast: public Expression {
     public:
     Type *type;
-    Ast *exp;
+    Expression *expr;
 
-    TypeCast(Type *t, Ast* e);
+    TypeCast(Type *t, Expression* e);
     ~TypeCast();
 
     void accept(AstVisitor *visitor);
@@ -163,9 +163,9 @@ class TypeCast: public Expression {
 class UnaOp: public Expression {
     public:
     UnaryOperator op;
-    Ast *child;
+    Expression *expr;
 
-    UnaOp(UnaryOperator o, Ast *c);
+    UnaOp(UnaryOperator o, Expression *e);
     ~UnaOp();
 
     void accept(AstVisitor *visitor);
@@ -174,9 +174,9 @@ class UnaOp: public Expression {
 class BinOp: public Expression {
     public:
     BinaryOperator op;
-    Ast *left, *right;
+    Expression *left, *right;
 
-    BinOp(BinaryOperator o, Ast *l, Ast *r);
+    BinOp(BinaryOperator o, Expression *l, Expression *r);
     ~BinOp();
 
     void accept(AstVisitor *visitor);
@@ -185,9 +185,9 @@ class BinOp: public Expression {
 class Assign: public Expression {
     public:
     AssignOperator op;
-    Ast *lval, *rval;
+    Expression *lval, *rval;
 
-    Assign(AssignOperator o, Ast *lv, Ast *rv);
+    Assign(AssignOperator o, Expression *lv, Expression *rv);
     ~Assign();
 
     void accept(AstVisitor *visitor);
@@ -206,9 +206,9 @@ class Continue: public Statement {
 
 class Return: public Statement {
     public:
-    Ast *val;
+    Expression *var;
 
-    Return(Ast *v);
+    Return(Expression *v);
     ~Return();
 
     void accept(AstVisitor *visitor);
@@ -226,7 +226,7 @@ class Block: public Statement {
 
 class ExpStatement: public Statement {
     public:
-    Expression *exp;
+    Expression *expr;
 
     ExpStatement(Expression *e);
     ~ExpStatement();

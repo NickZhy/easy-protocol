@@ -53,7 +53,7 @@ void Constant::accept(AstVisitor *visitor) {
 }
 
 // FunctionCall
-FunctionCall::FunctionCall(Ast* f, std::vector<Expression*> *a): func(f), args(a) {}
+FunctionCall::FunctionCall(Expression* f, std::vector<Expression*> *a): func(f), args(a) {}
 
 FunctionCall::~FunctionCall() {
     delete func;
@@ -66,11 +66,11 @@ void FunctionCall::accept(AstVisitor *visitor) {
 }
 
 // IndexOf
-IndexOf::IndexOf(Ast *v, Ast *e): var(v), exp(e) {}
+IndexOf::IndexOf(Expression *v, Expression *i): var(v), idx(i) {}
 
 IndexOf::~IndexOf() {
     delete var;
-    delete exp;
+    delete idx;
 }
 
 void IndexOf::accept(AstVisitor *visitor) {
@@ -78,7 +78,7 @@ void IndexOf::accept(AstVisitor *visitor) {
 }
 
 // Access
-Access::Access(Ast* v, Ast *f): var(v), field(f) {}
+Access::Access(Expression *v, Expression *f): var(v), field(f) {}
 
 Access::~Access() {
     delete var;
@@ -90,11 +90,11 @@ void Access::accept(AstVisitor *visitor) {
 }
 
 // TypeCast
-TypeCast::TypeCast(Type *t, Ast *e): type(t), exp(e) {}
+TypeCast::TypeCast(Type *t, Expression *e): type(t), expr(e) {}
 
 TypeCast::~TypeCast() {
     delete type;
-    delete exp;
+    delete expr;
 }
 
 void TypeCast::accept(AstVisitor *visitor) {
@@ -102,10 +102,10 @@ void TypeCast::accept(AstVisitor *visitor) {
 }
 
 // UnaOp
-UnaOp::UnaOp(UnaryOperator o, Ast *c): op(o), child(c) {}
+UnaOp::UnaOp(UnaryOperator o, Expression *e): op(o), expr(e) {}
 
 UnaOp::~UnaOp() {
-    delete child;
+    delete expr;
 }
 
 void UnaOp::accept(AstVisitor *visitor) {
@@ -113,7 +113,7 @@ void UnaOp::accept(AstVisitor *visitor) {
 }
 
 // BinOp
-BinOp::BinOp(BinaryOperator o, Ast *l, Ast *r): op(o), left(l), right(r) {}
+BinOp::BinOp(BinaryOperator o, Expression *l, Expression *r): op(o), left(l), right(r) {}
 
 BinOp::~BinOp() {
     delete left;
@@ -125,7 +125,7 @@ void BinOp::accept(AstVisitor *visitor) {
 }
 
 // Assign
-Assign::Assign(AssignOperator o, Ast *lv, Ast *rv): op(o), lval(lv), rval(rv) {}
+Assign::Assign(AssignOperator o, Expression *lv, Expression *rv): op(o), lval(lv), rval(rv) {}
 
 Assign::~Assign() {
     delete lval;
@@ -147,11 +147,11 @@ void Continue::accept(AstVisitor *visitor) {
 }
 
 // Return
-Return::Return(Ast *v): val(v) {}
+Return::Return(Expression *v): var(v) {}
 
 Return::~Return() {
-    if (val != nullptr) {
-        delete val;
+    if (var != nullptr) {
+        delete var;
     }
 }
 
@@ -172,10 +172,10 @@ void Block::accept(AstVisitor *visitor) {
 }
 
 // ExpStatement
-ExpStatement::ExpStatement(Expression *e): exp(e) {}
+ExpStatement::ExpStatement(Expression *e): expr(e) {}
 
 ExpStatement::~ExpStatement() {
-    delete exp;
+    delete expr;
 }
 
 void ExpStatement::accept(AstVisitor *visitor) {
