@@ -209,3 +209,13 @@ void ToStringVisitor::visitStructDeclaration(StructDeclaration *structDeclaratio
     visitVec(structDeclaration->body, "\n", INDENT);
     result.append("\n}");
 }
+
+void StructVisitor::visitStructDeclaration(StructDeclaration *structDeclaration) {
+    std::cout << "add struct " << *(structDeclaration->id->name) << " to scope" << std::endl;
+    std::cout << "add new scope " << *(structDeclaration->id->name) << std::endl;
+    for (Declaration *decl: *(structDeclaration->body)) {
+        ToStringVisitor visitor;
+        decl->accept(&visitor);
+        std::cout << visitor.getResult() << std::endl;
+    }
+}

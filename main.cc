@@ -16,10 +16,8 @@ int main(int argc, char** argv) {
     fclose(fp);
     for (int i = 0; i < astLst.size(); ++i) {
         Ast *ast = astLst[i];
-        ToStringVisitor visitor;
+        StructVisitor visitor;
         ast->accept(&visitor);
-        std::cout << "parsed ast:" << std::endl
-            << visitor.getResult() << std::endl;
         delete ast;
     }
     return 0;

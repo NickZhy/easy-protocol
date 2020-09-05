@@ -36,15 +36,15 @@ EXP     ([Ee][-+]?[0-9]+)
 "float"     { yylval->priType = TYP_FLOAT; return TYPE; }
 "double"    { yylval->priType = TYP_DOUBLE; return TYPE; }
 
-"if"    { return IF; }
-"else"  { return ELSE; }
-"while" { return WHILE; }
+"if"        { return IF; }
+"else"      { return ELSE; }
+"while"     { return WHILE; }
 
-"break"         { return BREAK; }
-"continue"      { return CONTINUE; }
-"return"        { return RETURN; }
+"break"     { return BREAK; }
+"continue"  { return CONTINUE; }
+"return"    { return RETURN; }
 
-"struct"        { return STRUCT; }
+"struct"    { return STRUCT; }
 
 
 "+" | 
