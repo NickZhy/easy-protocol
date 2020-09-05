@@ -8,3 +8,4 @@ ezpcc
 *.lex.hh
 *.swp
 *.dSYM
+.vscode
