@@ -317,8 +317,9 @@ formal_para
 ;
 
 formal_para_lst
-:                               { $$ = new std::vector<FormalParameter*>(); }
-| formal_para_lst formal_para   { $1->push_back($2); $$ = $1; }
+:                                   { $$ = new std::vector<FormalParameter*>(); }
+| formal_para                       { $$ = new std::vector<FormalParameter*>(); $$->push_back($1); }
+| formal_para_lst ',' formal_para   { $1->push_back($3); $$ = $1; }
 ;
 
 function_header

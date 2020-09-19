@@ -212,10 +212,10 @@ void ToStringVisitor::visitStructDeclaration(StructDeclaration *structDeclaratio
 
 void StructVisitor::visitStructDeclaration(StructDeclaration *structDeclaration) {
     std::cout << "add struct " << *(structDeclaration->id->name) << " to scope" << std::endl;
-    std::cout << "add new scope " << *(structDeclaration->id->name) << std::endl;
-    for (Declaration *decl: *(structDeclaration->body)) {
+    std::vector<Declaration*> *body = structDeclaration->body;
+    for (std::vector<Declaration*>::iterator decl = body->begin(); decl < body->end(); ++decl) {
         ToStringVisitor visitor;
-        decl->accept(&visitor);
+        (*decl)->accept(&visitor);
         std::cout << visitor.getResult() << std::endl;
     }
 }
