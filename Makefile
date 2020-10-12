@@ -1,5 +1,5 @@
 
-# Util function that removes duplicates
+# Util function that removes duplicates.
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 
 TARGET = ezpcc
@@ -16,7 +16,7 @@ LL_GEN_HEADERS = $(patsubst %.ll,$(OUT_PATH)/%.lex.hpp,$(LL_SRCS))
 
 GEN_SRCS = $(YY_GEN_SRCS) $(LL_GEN_SRCS)
 GEN_HEADERS = $(YY_GEN_HEADERS) $(LL_GEN_HEADERS)
-# The include options for generated headers
+# The include options for generated headers.
 GEN_HEADER_INCLUDE = $(addprefix -I,$(call uniq,$(dir $(GEN_HEADERS))))
 
 SRCS = $(shell find $(SRC_PATH) -name '*.cpp') $(GEN_SRCS)
@@ -27,14 +27,20 @@ CXXFLAGS = -Werror -c
 DEPFLAGS = -MT $@ -MMD -MP
 INCLUDES = -Iinclude/easy_protocol $(GEN_HEADER_INCLUDE)
 
-# Code generation should run first
-all :: gen
-
-all :: $(OUT_PATH)/$(TARGET)
+all : $(OUT_PATH)/$(TARGET)
 
 $(OUT_PATH)/$(TARGET) : $(OBJS)
 	@mkdir -p $(@D)
 	$(CXX) -o $@ $(OBJS) 
+
+# Code generation should run before any compilation.
+$(OUT_PATH)/%.o : %.cpp | gen
+	@mkdir -p $(@D)
+	$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(INCLUDES) -o $@ $<
+
+# Code generation.
+.PHONY: gen
+gen: $(GEN_SRCS) $(GEN_HEADERS)
 
 $(OUT_PATH)/%.tab.cpp $(OUT_PATH)/%.tab.hpp : %.yy
 	@mkdir -p $(@D)
@@ -45,14 +51,6 @@ $(OUT_PATH)/%.lex.cpp $(OUT_PATH)/%.lex.hpp : %.ll
 	@mkdir -p $(@D)
 # The target can be either hpp or cpp. Basename is used so that we won't mix them. 
 	flex --header-file=$(basename $@).hpp -o$(basename $@).cpp $<
-
-$(OUT_PATH)/%.o : %.cpp
-	@mkdir -p $(@D)
-	$(CXX) $(DEPFLAGS) $(CXXFLAGS) $(INCLUDES) -o $@ $<
-
-# Code generation
-.PHONY: gen
-gen: $(GEN_SRCS) $(GEN_HEADERS)
 
 include $(wildcard $(OBJS:.o=.d))
 
