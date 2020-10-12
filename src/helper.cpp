@@ -1,6 +1,6 @@
 #include <iostream>
-#include "ast.hh"
-#include "helper.hh"
+#include "ast.hpp"
+#include "helper.hpp"
 
 std::string type2str(PrimitiveType type) {
     const char *str;

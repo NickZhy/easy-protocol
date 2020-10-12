@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include "ast.hh"
-#include "helper.hh"
+#include "ast.hpp"
+#include "ast_visitor.hpp"
+#include "helper.hpp"
 
 // Ast virtual destructor
 Ast::~Ast() {}

@@ -1,5 +1,6 @@
-#include "helper.hh"
-#include "visitor.hh"
+#include "ast_visitor.hpp"
+#include "helper.hpp"
+#include "tostring_visitor.hpp"
 
 ToStringVisitor::ToStringVisitor(): indentLevel(0) {}
 
@@ -208,14 +209,4 @@ void ToStringVisitor::visitStructDeclaration(StructDeclaration *structDeclaratio
     result.append(" {\n");
     visitVec(structDeclaration->body, "\n", INDENT);
     result.append("\n}");
-}
-
-void StructVisitor::visitStructDeclaration(StructDeclaration *structDeclaration) {
-    std::cout << "add struct " << *(structDeclaration->id->name) << " to scope" << std::endl;
-    std::vector<Declaration*> *body = structDeclaration->body;
-    for (std::vector<Declaration*>::iterator decl = body->begin(); decl < body->end(); ++decl) {
-        ToStringVisitor visitor;
-        (*decl)->accept(&visitor);
-        std::cout << visitor.getResult() << std::endl;
-    }
 }

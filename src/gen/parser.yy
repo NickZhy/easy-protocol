@@ -8,17 +8,17 @@
     #include <string>
     #include <vector>
 
-    #include "ast.hh"
+    #include "ast.hpp"
     typedef void* yyscan_t;
 }
 
 %code provides {
-    #include "parser.hh"
+    #include "parser.hpp"
 }
 
 %{
-    #include "parser.tab.hh"
-    #include "lexer.lex.hh"
+    #include "parser.tab.hpp"
+    #include "lexer.lex.hpp"
 
     void yyerror(YYLTYPE*, yyscan_t, std::vector<Ast*>&, const char*);
 %}

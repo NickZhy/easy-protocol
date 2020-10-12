@@ -11,7 +11,7 @@
 }
 
 %{
-    #include "parser.tab.hh"
+    #include "parser.tab.hpp"
     
     #define YY_USER_ACTION                                                  \
         yylloc->first_line = yylloc->last_line;                             \

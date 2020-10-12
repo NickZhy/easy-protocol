@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "ast.hh"
+#include "ast.hpp"
 
 std::string type2str(PrimitiveType type);
 

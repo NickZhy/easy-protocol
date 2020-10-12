@@ -1,11 +1,2 @@
-ezpcc
-*.ezp
-*.tab.c
-*.tab.cc
-*.tab.hh
-*.lex.c
-*.lex.cc
-*.lex.hh
-*.swp
-*.dSYM
+out
 .vscode

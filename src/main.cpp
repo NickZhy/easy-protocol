@@ -1,9 +1,9 @@
 #include <vector>
 #include <iostream>
 
-#include "ast.hh"
-#include "parser.hh"
-#include "visitor.hh"
+#include "ast.hpp"
+#include "parser.hpp"
+#include "tostring_visitor.hpp"
 
 int main(int argc, char** argv) {
     FILE* fp = fopen(argv[1], "r");
@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     fclose(fp);
     for (int i = 0; i < astLst.size(); ++i) {
         Ast *ast = astLst[i];
-        StructVisitor visitor;
+        ToStringVisitor visitor;
         ast->accept(&visitor);
         delete ast;
     }
